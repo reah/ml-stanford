@@ -164,14 +164,64 @@
 				\vspace{-5pt}
 				\textbf{$\sbt$ Feature Scaling} -- divide the input values by the range (max -- min). Input values in roughly the same range speed up the convergence of gradient descent.\\
 				\textbf{$\sbt$ Mean Normalization} -- subtract the mean for an input variable from the values for that input variable.
-				\vspace{-5pt}\begin{equation}
+				\vspace{-8pt}\begin{equation}
 				    x_i := \frac{x_i - \mu_i}{s_i}
 				\end{equation}
-				{\tiny(4) $\mu_i$ is the average and $s_i$ is the range, $(max-min)$, of all values for feature $i$}\\
+				{\tiny(4) $\mu_i$ is the mean \& $s_i$ is the range, $(max-min)$, of all values for feature $i$ \par}
+				
+				\textbf{$\sbt$ Learning Rate} -- $\alpha$ too small $\implies$ slow convergence; 
+				    $\alpha$ too large $\implies$ may not converge.
 			\end{minipage}
-		};
+			};
 		\node[fancytitle, right=10pt] at (box.north west) {Multivariate Linear Regression};
 	\end{tikzpicture}
+	
+%------------ Normal Equation ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+				\textbf{$\sbt$ Normal Equation} -- non-iterative algorithm for minimizing $J(\theta)$; $note:$ O($n^3$)\ to calculate $X^{T}X$\vspace{-8pt}
+				\begin{equation}
+				    \theta = (X^TX)^{-1}X^Ty
+				\end{equation}
+				$m$ examples $(x^{(1)},y^{(1)}), \dots, (x^{(m)},y^{(m)})$; $n$ features\\
+               			$x^{(i)}$ = 
+                			$\begin{bmatrix}
+					x^{(i)}_{0}\\
+					x^{(i)}_{1}\\
+					\vdots\\
+					x^{(i)}_{n}
+				\end{bmatrix}$
+				$\in \mathbb{R}^{n+1}$
+				\hspace{3pt}$\vert$\hspace{3pt} 
+				X= 
+				$\begin{bmatrix}
+					(x^{(1)})^T\\
+					(x^{(2)})^T\\
+					\vdots\\
+					(x^{(n)})^T 
+				\end{bmatrix}$
+				\hspace{3pt}$\vert$\hspace{3pt} 
+				y = $\begin{bmatrix}
+					y^1\\
+					y^2\\
+					\vdots\\
+					y^m 
+				\end{bmatrix}$
+				
+		{\tiny $x^{(i)}$ = training vector $i$ (containing values from all features); $X$ $\rightarrow$ $m$x(n+1)}\\
+		\textbf{$\sbt$ If X$^{T}$X is noninvertible}, common causes include:\par
+		\begin{enumerate}
+			\itemsep0em 
+			\item Redundant features, where two features are very closely related (i.e. they are linearly dependent)
+			\item Too many features (e.g. m $\leq$ n). In this case, delete some features or use `regularization'.
+		\end{enumerate}
+				
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Normal Equation};
+	\end{tikzpicture}
+	
 	
 		\end{multicols*}
 \end{document}
