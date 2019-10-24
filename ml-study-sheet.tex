@@ -2,7 +2,7 @@
 % 
 % Machine Learning by Stanford University
 % Professor Andrew Ng
-% Study Sheet by Reah Miyara <ml@reah.me>
+% Study Sheet by Reah Miyara <mail@reah.me>
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -84,7 +84,7 @@
 		\node [mybox] (box){%
 			\begin{minipage}{0.3\textwidth}
 				\textbf{$\sbt$ ML} -- a computer program with increased performance $P$ at some class of tasks $T$ with experience $E$. \\
-				\textbf{$\sbt$ Supervised} -- given a ['ground truth'] data set, predict output given the input. Types of prediction:
+				\textbf{$\sbt$ Supervised} -- given a [`ground truth'] data set, predict output given the input. Types of prediction:
 				\begin{enumerate}
 					\itemsep0em 
 					\item \textbf{Regression} -- continuous, numerical
@@ -221,6 +221,122 @@
 		};
 		\node[fancytitle, right=10pt] at (box.north west) {Normal Equation};
 	\end{tikzpicture}
+	
+
+%------------ Classification Logistic Regression ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+				\textbf{$\sbt$ Logistic Regression Model} -- want 0 $\leq$ $h_{\theta}(x) \leq 1$\\
+				\vspace{-10pt}\begin{equation}
+				    g(z) = \frac{1}{1+e^{-z}}
+				\end{equation}
+				\textbf{$\sbt$ Sigmoid/Logistic Function}
+				\vspace{-10pt}\begin{equation}
+				 h_{\theta}(x) = g(\theta^{T}x) = \frac{1}{1+e^{-\theta^{T}(x)}} 
+				 \end{equation}
+				 \vspace{-20pt}\begin{equation}
+				     h_{\theta}(x) = P(y=1 \vert x; \theta) = 1 - P(y=0 \vert x;\theta)
+				\end{equation}
+		\textbf{$\sbt$ Decision Boundary}\par
+		\begin{center}\begin{enumerate}
+    			\itemsep0em 
+    			\item y = 1 if $\theta^{T}(x) \geq 0$
+			\item y = 0 if $\theta^{T}(x) < 0 $
+		\end{enumerate}
+		\end{center}
+		\textbf{$\sbt$ Cost Function}\par
+		    \vspace{-20pt}\begin{equation}
+			Cost (h_{\theta}(x), y) =
+			\begin{cases} 
+              -$log$(h_{\theta}(x))& $if $y=1 \\
+              -$log$(1-h_{\theta}(x))& $if $y=0 \\
+            \end{cases}
+            \end{equation}\\\vspace{-30pt}
+            \begin{equation}
+		Cost(h_\theta(x), y) = -ylog(h_\theta(x))-(1-y)log(1-h_\theta(x))
+	    \end{equation}
+            \vspace{-15pt}\begin{equation}
+			    J(\theta)=\frac{1}{m}\sum_{i = 1}^{m}Cost(h_\theta(x^{(i)}),y^{(i)})
+			  \vspace{-8pt}\end{equation}
+			{\tiny a vectorized implementation is:}\\
+			 \vspace{-20pt}\begin{equation}
+			    h=g(X\theta); \hspace{10pt} 
+			    J(\theta)=\frac{1}{m} \cdot (-y^{T}log(h)-(1-y)^{T}log(1-h))
+			 \end{equation}
+			 
+			 \vspace{-10pt}\begin{equation}
+			    \theta_{j} := \theta_{j} - \frac{\alpha}{m} \sum_{i=1}^{m}(h_{\theta}(x^{(i)})-y^{(i)})\cdot x_{j}^{(i)}
+			 \end{equation}
+			 {\tiny a vectorized implementation is:}\\
+			 \vspace{-10pt}\begin{equation}
+			    \theta := \theta - \frac{\alpha}{m} X^{T}(g(X\theta)-\vec{y} )
+			    \end{equation}
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Classification Logistic Regression};
+	\end{tikzpicture}
+	
+	%------------ Multiclass Classification ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+			\begin{center}
+			    y $\in {0, 1, \dots n}$\\
+			    h$_\theta^{(0)}(x)$ = P(y=0$\vert$x;$\theta$)\\
+			    h$_\theta^{(1)}(x)$ = P(y=1$\vert$x;$\theta$)\\\vspace{-5pt}
+			    $\vdots$\\
+			    h$_\theta^{(n)}(x)$ = P(y=n$\vert$x;$\theta$)\\
+			    prediction = max$_{i}(h_{\theta}^{(i)}(x))$
+			\end{center}
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Multiclass Classification};
+	\end{tikzpicture}
+	
+	\columnbreak
+		%------------ Overfitting ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+			\textbf{$\sbt$ Underfitting} -- hypothesis shows structure not captured by the model; does not fit the data well\\
+			\textbf{$\sbt$ Overfitting} -- hypothesis corresponds too closely to data $\therefore$ fail to predict future results reliably\\
+			$\sbt$ Addressing the problem of overfitting: \\
+			\vspace{-20pt}\begin{enumerate}
+			\itemsep0em
+			    \item \textbf{Reduce the number of features} -- manually/algorithmically select subset of features.
+			    \vspace{-5pt}\item \textbf{Regularization} -- keep all features, but reduce the magnitude of parameters $\theta_j$ by $\lambda$ {\tiny (regularization parameter)}.
+			\end{enumerate}
+			\vspace{-10pt}\begin{equation}
+			        J(\theta) = \frac{1}{2m}\left[ \sum_{i=1}^{m}(h_{\theta}(x^{(i)}) - y^{(i)})^2 + \lambda\sum_{j=1}^{n}\theta^2_j \right]
+			\end{equation}
+			Gradient Descent {\tiny regularized linear regression does not penalize} $\theta_0$
+			\vspace{-10pt}\begin{equation}
+		        		\theta_0 := \theta_0-\alpha\frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)}) - y^{(i)})\cdot x^{(i)}_0
+			\end{equation}
+			\vspace{-10pt}\begin{equation}
+		        		\theta_j := \theta_j-\alpha \left[ \left( \frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)}) - y^{(i)})\cdot x^{(i)}_j \right) + \frac{\lambda}{m}\theta_j \right]
+			\end{equation}
+			\vspace{-15pt}\begin{equation}
+		        		\theta_j := \theta_j(1-\alpha \frac{\lambda}{m}) - \alpha \frac{1}{m}\sum_{i=1}^{m}(h_{\theta}(x^{(i)}) - y^{(i)})\cdot x^{(i)}_j 
+			\end{equation}
+
+			Normal Equation
+			\vspace{-10pt}\begin{equation}
+		        		\theta = (X^TX + \lambda \cdot L)^{-1}X^Ty
+			\end{equation}
+			where L = 
+			$\begin{bmatrix}
+    				0 & \\
+    				& 1 \\
+				& & \ddots \\
+    				& & & 1
+ 			\end{bmatrix}$
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Under/Over --fitting};
+	\end{tikzpicture}
+
 	
 	
 		\end{multicols*}
