@@ -72,7 +72,7 @@
 \begin{document}
 
 \begin{center}{\huge{\textbf{Machine Learning by Stanford University}}}\\
-	{\large \texttt{Study Sheet by Reah Miyara \href{mailto:ml@reah.me}{\Letter \hspace{3pt}ml@reah.me}}}
+	{\large \texttt{Study Sheet by Reah Miyara \href{mailto:mail@reah.me}{\Letter \hspace{3pt}mail@reah.me}}}
 \end{center}
 \begin{multicols*}{3}
 	
@@ -336,6 +336,101 @@
 		};
 		\node[fancytitle, right=10pt] at (box.north west) {Under/Over --fitting};
 	\end{tikzpicture}
+
+				%------------ Neural Networks ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+			\textbf{$\sbt$ Activation Function}
+			\vspace{-10pt}\begin{equation}
+				 h_{\theta}(x) = g(\theta^{T}x) = \frac{1}{1+e^{-\theta^{T}(x)}} 
+			\vspace{-10pt}\end{equation}
+			$a^{(i)}_j$ -- `activation' of unit $i$ in layer $j$\\
+			$\Theta^{(j)}$ -- matrix of weights controlling function mapping from layer $j$ to layer $j+1$\\
+			\vspace{-10pt}\begin{center}$\begin{bmatrix}
+    				x_0\\
+    				x_1\\
+    				x_2\\
+    				x_3\\
+ 			\end{bmatrix}$
+ 			$\rightarrow$
+ 			$\begin{bmatrix}
+    				a_1^{(2)}\\
+    				a_2^{(2)}\\
+    				a_3^{(2)}\\
+ 			\end{bmatrix}$
+ 			$\rightarrow$
+ 			$h_\theta(x)$ \\
+ 			\end{center}
+ 			$h_\theta(x)$ = $a_1^{(3)} = g(\Theta^{(2)}_{10}a_0^{(2)} + \Theta^{(2)}_{11}a_1^{(2)} + \Theta^{(2)}_{12}a_2^{(2)} + \Theta^{(2)}_{13}a_3^{(2)})$\\
+ 			
+ 			Each layer gets its own matrix of weights, $\Theta^{(j)}$. If network has $s_j$ units in layer $j$ and $s_{j+1}$ units in layer $j+1$, then $\Theta^{(j)}$ will be of dimension $s_{j+1} \times (s_j +1)$.\\
+
+			\textbf{$\sbt$ Forward Propagation: {\tiny vectorized implementation}} --  \\
+			    for layer $j=2$ \& node $k$, the variable $z$ will be:\\
+			    
+			    $z_k^{(2)}$ = $\Theta^{(1)}_{k,0}x_0 + \Theta^{(1)}_{k,1}x_1 + \Theta^{(1)}_{k,n}x_n$\\
+			    
+			    therefore it follows that: \\
+			    
+			    $a^{(2)}_1 = g(z_1^{(2)})$, $a^{(2)}_2 = g(z_2^{(2)})$, $a^{(2)}_3 = g(z_2^{(3)})$\\
+			    
+			    a vectorized representation of $x$ and $z^{(j)}$ is:\\
+			    $x = \begin{bmatrix}
+    				x_0\\
+    				x_1\\
+    				\vdots\\
+    				x_n\\
+ 			    \end{bmatrix}$
+ 			    $z^{(j)} = \begin{bmatrix}
+    				z^{j}_1\\
+    				z^{j}_2\\
+    				\vdots\\
+    				z^{j}_n\\
+ 			    \end{bmatrix}$
+ 			    \\{\tiny setting $x = a^{(1)}$ we can write it as $z^{(j)} = \Theta^{(j-1)}a^{(j-1)}$ 
+ 			    $a^{(j)} = g(z^{(j)})$ where g is applied element-wise to our vector $z^{(j)}$
+ 			    We can then add a bias unit (equal to 1) to layer $j$ after we have computed $a^{(j)}$. This will be $a_0^{(j)}$ and will be equal to 1. To compute our final 			   hypothesis, the last theta matrix $\Theta_{(j)}$ will have only one row which is multiplied by one column $a^{(j)}$ so that our result is a single number. Final 			   result: $h_\Theta(x)=a^{(j+1)}=g(z^{(j+1)})$}
+			    \end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Neural Networks};
+	\end{tikzpicture}
+
+				%------------ Neural Networks ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+				\textbf{$\sbt$ Cost Function \& Backpropagation}
+			    	\begin{equation}
+			    	\begin{split}
+			   	J(\Theta) = -\frac{1}{m}\sum_{i=1}^m \sum_{k=1}^K[y^{(i)}_k log((h_\Theta(x^{(i)}))_k) +\\ 
+			    	(1-y^{(i)}_k)log(1-(h_\Theta(x^{(i)}))_k)]+\frac{\lambda}{2m} \sum_{l=1}^{L-1} \sum_{i=1}^{s_l}\sum_{j=1}^{s_{l+1}}(\Theta^{(l)}_{j,i})^2
+			    	\end{split}
+			    	\end{equation}
+				
+			    	{\tiny  `Backpropagation' is neural-network term for minimizing our cost function. Given a training set $\{(x^{(1)}, y^{(1)}) \cdots (x^{(m)}, y^{(m)}) \}$:}\\
+				{\tiny $\Delta_{i,j}^{(l)} := 0$ for all (l,i,j), (end up with a matrix full of zeros)}\\
+				{\tiny for training example t=1 to m:
+				\vspace{-7pt}\begin{enumerate}
+				\itemsep-.25em
+				\item Set $a^{(1)} := x^{(t)}$
+				\item Perform forward propagation to compute $a^{(l)}$ for l = 2,3,...,L
+				\item Using $y^{(t)}$, compute $\delta^{(L)} = a^{(L)} - y^{(t)}$\\
+				L is the total number of layers \& $a^{(L)}$ is the vector of outputs of the activation units for the last later. So our $\delta$ [error values], are the differences of the actual results in the last layer \& the correct outputs in y. For the delta values of the layers before last, use the following equation that steps back from right to left:
+				\item $\delta^{(L-1)}, \delta^{(L-2)},..,\delta^{(2)}$ w/ $\delta^{(l)} = ((\Theta^{(l)})^T \delta^{(l+1)}) .\star a^{(l)} .\star (1-a^{(l)})$\\
+				delta values of layer l are calculated by multiplying the delta values in the next layer with the theta matrix of layer l. Next, perform element-wise multiplication with function g', the derivative of the activation function g evaluated with the input values given by $z^{(l)}$. $g'(z^{(l)})=a^{(l)} .\star (1-a^{(l)})$ 
+				\item $\Delta_{i,j}^{(l)} := \Delta_{i,j}^{(l)} + a_j^{(l)} \delta_i^{(l+1)}$ vectorized as $\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}(a^{(l)})^T$\\
+				Hence we update our new $\Delta$ matrix: \\
+				$\sbt$ $D^{(l)}_{i,j} := \frac{1}{m}(\delta^{(l)}_{i,j} + \lambda\Theta^{(l)}_{i,j})$ if j $\neq$ 0\\
+			        $\sbt$ $D^{(l)}_{i,j} := \frac{1}{m}(\delta^{(l)}_{i,j}$ if j = 0\\
+			        The capital-delta matrix D is used as an `accumulator' to add up our values as we go along \& eventually compute our partial derivative $\therefore$ \\
+			        $\frac{\partial}{\partial\Theta^{(l)}_{i,j}} J(\Theta)=D^{(l)}_{i,j}$
+				\end{enumerate}}
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Neural Networks};
+	\end{tikzpicture}			
+		
 
 	
 	
