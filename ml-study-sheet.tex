@@ -422,7 +422,7 @@
 				\item $\Delta_{i,j}^{(l)} := \Delta_{i,j}^{(l)} + a_j^{(l)} \delta_i^{(l+1)}$ vectorized as $\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}(a^{(l)})^T$\\
 				Hence we update our new $\Delta$ matrix: \\
 				$\sbt$ $D^{(l)}_{i,j} := \frac{1}{m}(\delta^{(l)}_{i,j} + \lambda\Theta^{(l)}_{i,j})$ if j $\neq$ 0\\
-			        $\sbt$ $D^{(l)}_{i,j} := \frac{1}{m}(\delta^{(l)}_{i,j}$ if j = 0\\
+			        $\sbt$ $D^{(l)}_{i,j} := \frac{1}{m}(\delta^{(l)}_{i,j})$ if j = 0\\
 			        The capital-delta matrix D is used as an `accumulator' to add up our values as we go along \& eventually compute our partial derivative $\therefore$ \\
 			        $\frac{\partial}{\partial\Theta^{(l)}_{i,j}} J(\Theta)=D^{(l)}_{i,j}$
 				\end{enumerate}}
@@ -430,8 +430,94 @@
 		};
 		\node[fancytitle, right=10pt] at (box.north west) {Neural Networks};
 	\end{tikzpicture}			
+	
+					%------------ Evaluating a Learning Algorithm ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+				\textbf{$\sbt$ Debugging a learning algorithm}\\
+				{\tiny \vspace{-7pt}\begin{itemize}
+				\itemsep-.25em
+				\item Getting more training examples -- {\bf fixes high variance}
+				\item Trying smaller sets of features -- {\bf fixes high variance}
+				\item Adding features -- {\bf fixes high bias}
+				\item Adding polynomial features -- {\bf fixes high bias} 
+				\item Decreasing $\lambda$ -- {\bf fixes high bias}
+				\item Increasing $\lambda$ -- {\bf fixes high variance}
+				\end{itemize}}
+				{$\sbt$ A hypothesis may have a low error for training examples but still be inaccurate (overfitting). Hence, }\\
+				{\tiny \vspace{-7pt}\begin{itemize}
+				\itemsep-.25em
+				\item Learn $\theta$ and minimize $J_{train}(\Theta)$ using the training set
+				\item Compute the test set error $J_{test}(\Theta)$ 
+				\end{itemize}}
+				\vspace{-5pt}{$\sbt$ Test set error for linear regression: }
+				\vspace{-5pt}\begin{equation}
+					J_{test}(\Theta) = \frac{1}{2m_{test}}\sum^{m_{test}}_{i=1}(h_{\Theta}(x_{test}^{(i)}) - y^{(i)}_{test})^{2}\vspace{-7pt}
+				\end{equation}
+				{$\sbt$ Test set error for classification: }
+				\begin{center}
+				$err(h_{\Theta}(x), y)$ = 1 if $h_{\Theta}(x)$ $\geq$ .5 and y = 0 or $h_{\Theta}(x)$ $<$ .5 and y = 1. Otherwise, $err(h_{\Theta}(x), y)$ = 0. \\
+				\end{center}
+				$\sbt$ Test Error = $\frac{1}{m_{test}}\sum^{m_{test}}_{i=1}err(h_{\Theta}(x^{(i)}_{test}),y^{(i)}_{test})$
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Evaluating a Learning Algorithm};
+	\end{tikzpicture}				
+	
 		
+						%------------ Model Selection \& Train/Validation/Test Sets ---------------
+	\begin{tikzpicture}
+		\node [mybox] (box){%
+			\begin{minipage}{0.3\textwidth}
+				\textbf{$\sbt$ Model Select and Train/Validation/Test Sets}\\
+				{\tiny \begin{enumerate}
+				\itemsep-.25em
+				\vspace{-10pt}\item Optimize parameters in $\Theta$ using the {\bf training set (60\%)} for each polynomial degree
+				\item Find the polynomial degree d with the least error using the {\bf cross validation set (20\%)}
+				\item Estimate the generalization error using the {\bf test set (20\%)} with $J_{test}(\Theta^{(d)})$, (d = theta from polynomial with lower error);
+				\end{enumerate}}
+				\vspace{-5pt}\textbf{$\sbt$ Diagnosing Bias vs. Variance}\\
+				{\tiny \begin{itemize}
+				\itemsep-.25em
+				\vspace{-10pt}\item we need to distinguish whether bias or variance is the problem contributing to bad predictions. 
+				\item high bias is underfitting \& high variance is overfitting. Ideally we need to find a golden mean between the two.
+				\item training error will tend to decrease as we increase the degree d of the polynomial
+				\item cross validation error will tend to decrease as we increase d up to a point, \& then it will increase as d is increased, forming a convex curve.
+				\item {\bf High bias (underfitting):} both $J_{train}(\Theta)$ and $J_{CV}(\Theta)$ will be high. Also, $J_{train}(\Theta) \approx J_{CV}(\Theta)$
+				\item {\bf High variance (overfitting):} $J_{train}(\Theta)$ will be low and $J_{CV}(\Theta)$ will be much greater than $J_{train}(\Theta)$
+				\end{itemize}}
+				\vspace{-5pt}\textbf{$\sbt$ Experiencing High Bias}\\
+				{\tiny \begin{itemize}
+				\itemsep-.25em
+				\vspace{-10pt}\item {\bf Low training set size: } $J_{train}(\Theta)$ will be low \& $J_{CV}(\Theta)$ high. 
+				\item {\bf Large training set size: } causes both $J_{train}(\Theta)$ \& $J_{CV}(\Theta)$ to be high with $J_{train}(\Theta) \approx J_{CV}(\Theta)$. 
+				\item If a learning algorithm is suffering from {\bf high bias, getting more training data will not (by itself) help much}.
+				\end{itemize}}
+				\vspace{-5pt}\textbf{$\sbt$ Experiencing High Variance}\\
+				{\tiny \begin{itemize}
+				\itemsep-.25em
+				\vspace{-10pt}\item {\bf Low training set size: } $J_{train}(\Theta)$ will be low and $J_{CV}(\Theta)$ high. 
+				\item {\bf Large training set size: } $J_{train}(\Theta)$ increases with training set size \& $J_{CV}(\Theta)$ continues to decrease without leveling off. 				Also $J_{train}(\Theta)$ $<$ $J_{CV}(\Theta)$ but the difference between them remains significant. 
+				\item If a learning algorithm is suffering from {\bf high variance, getting more training data is likely to help}.
+				\end{itemize}}
+				\vspace{-15pt}\begin{center}
+					\includegraphics[width=130pt]{cost}
+					\includegraphics[width=180pt]{bias}
+					\includegraphics[width=180pt]{variance}
+				\end{center}
+				\vspace{-5pt}\textbf{$\sbt$ Error Analysis}\\
+				{\tiny \begin{enumerate}
+				\itemsep-.25em
+				\vspace{-10pt}\item Start with a simple algorithm, implement it quickly, and test it early on your cross validation data. 
+				\item Plot learning curves to decide if more data, features, etc. will help 
+				\item Manually examine the errors on examples in the cross validation set and try to spot a trend where most of the errors were made
+				\end{enumerate}}
 
+			\end{minipage}
+		};
+		\node[fancytitle, right=10pt] at (box.north west) {Evaluating a Learning Algorithm (cont.)};
+	\end{tikzpicture}									
 	
 	
 		\end{multicols*}
